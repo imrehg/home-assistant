@@ -73,13 +73,15 @@ class RestBinarySensor(BinarySensorDevice):
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
-        if self.rest.data is None:
+        value = self.rest.data
+
+        if value is None:
             return False
 
         if self._value_template is not None:
-            self.rest.data = template.render_with_possible_json_value(
-                self._hass, self._value_template, self.rest.data, False)
-        return bool(int(self.rest.data))
+            value = template.render_with_possible_json_value(
+                self._hass, self._value_template, value, False)
+        return bool(int(value))
 
     def update(self):
         """Get the latest data from REST API and updates the state."""
